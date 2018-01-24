@@ -10,9 +10,11 @@ var list =[];
         };
 
         $.post("/api/all", NewBurger, reload)
+        
     })
 
     function reload(){
+        $("#inputBox").val("");
         $("#listDiv").empty();
         $("#resultDiv").empty();
 
