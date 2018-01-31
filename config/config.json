@@ -1,11 +1,11 @@
 {
   "development": {
-    "username": "bc72859302028e",
-    "password": "620cd59d",
-    "database": "heroku_5b6f0ddef596e82",
+    "username": "b2b008dfa0ba69",
+    "password": "61822bde",
+    "database": "heroku_420353e25216db9",
     "host": "us-cdbr-iron-east-05.cleardb.net",
     "dialect": "mysql",
-    "port": 3306
+    "port":3306
   },
   "test": {
     "username": "b2b008dfa0ba69",
