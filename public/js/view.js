@@ -1,83 +1,92 @@
 $(document).ready(function () {
-reload()
 
-var list =[];
-
+    loadTable()
     $(document).on("click", "#submitBtn", function () {
-        var NewBurger = {
-            text: $("#inputBox").val(),
-            complete: false
+
+        var data = {
+            departure: $("#departure").val(),
+            destination: $("#destination").val(),
+            date: $("#date").val(),
+            time: $("#time").find(":selected").text(),
+            seats: $("#seats").find(":selected").text(),
+            minMoney: $("#minumum").val()
         };
 
-        $.post("/api/all", NewBurger, reload)
-        
+        console.log(data)
+
+        $.post("/api/all", data)
+
+        $("#addDiv").css("display","none")
+        loadTable()
+
     })
 
-    function reload(){
-        $("#inputBox").val("");
-        $("#listDiv").empty();
-        $("#resultDiv").empty();
+    function reload() {
 
-        $.get("/api/all/false",function(data){
-            list = data;
-
-            for (var i=0, n=list.length; i<n; i++){
-                var div = '<div id="'+list[i].id+'" class="listbox" data="'+list[i].text+'">'
-                var Box = '<button class="lists">'+(i+1)+'. '+list[i].text+'</button>';
-                var rmBtn = '<button class="rm">EAT</button>'
-                div = div+Box+rmBtn;
-                $("#listDiv").append(div)
-            }
-
-        })
-
-        $.get("/api/all/true",function(data){
-            list = data;
-            for (var i=0, n=list.length; i<n; i++){
-                var div = '<div id="'+list[i].id+'" class="listbox" data="'+list[i].text+'">'
-                var Box = '<button class="lists" disabled>'+(i+1)+'. '+list[i].text+'</button>';
-                var xBtn = '<button class="xbtn">X</button>'
-                div = div+Box+xBtn;
-                $("#resultDiv").append(div)
-            }
-
-        })
-
-        
     }
-    
-    $(document).on("click", ".rm", function(){
-        var id = $(this).parent().attr("id")
-        var text = $(this).parent().attr("data")
 
+    //clear the default value of inputbox when click.
 
-        var updated = {
-            text:text,
-            id:id,
-            complete:true
-        }
+    $(document).on("click", ".inputValue", function () {
 
-            $.ajax({
-              method: "PUT",
-              url: "/api/all",
-              data: updated
-            }).then(reload);
-          
+        $(this).val("");
     })
 
-    $(document).on("click",".xbtn", function(){
-        var id = $(this).parent().attr("id")
-        var target = {
-            id:id
-        }
+    $(document).on("click", "#closeBtn", function () {
 
-            $.ajax({
-              method: "DELETE",
-              url: "/api/all",
-              data: target
-            }).then(reload);
-          
+        $("#addDiv").css("display", "none")
+        loadTable()
     })
 
+    $(document).on("click", "#postRide", function () {
+        $("#listDiv").empty()
+        $("#addDiv").css("display", "block")
+    })
+
+
+    $(document).on("click", "#getRide", function () {
+        $("#addDiv").css("display","none")
+        loadTable()
+    })
+
+
+    function loadTable() {
+        $("#listDiv").empty();
+
+        var table =
+            `<table>
+            <tr>
+                <th>Departure</th>
+                <th>Destination</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Number of Seats</th>
+                <th>Minimum Pay</th>
+                <th>Join</th>
+            </tr>`
+
+        $.get("/api/all", function (data) {
+
+            for (var i = 0, n = data.length; i < n; i++) {
+                var contents =
+                    `<tr>
+                <td> ${data[i].departure} </td>
+                <td> ${data[i].destination} </td>
+                <td> ${data[i].date} </td>
+                <td> ${data[i].time} </td>
+                <td> ${data[i].seats} </td>
+                <td> ${data[i].minMoney} </td>
+                <td><button class="joinBtn" id="${data[i].id}">Join</button></td>
+            </tr>`
+
+                table += contents
+            }
+
+            table += `</table>`
+
+            $("#listDiv").append(table)
+
+        })
+    }
 
 })
